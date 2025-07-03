@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard de Arbitragem</title>
+  <script async src="https://widgets.oddspedia.com/odds-widget.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg-light: #f9f9f9;
+      --bg-dark: #1c1c1c;
+      --text-light: #333;
+      --text-dark: #f0f0f0;
+      --primary: #0b6e4f;
+      --card-bg-light: white;
+      --card-bg-dark: #2a2a2a;
+    }
+    [data-theme="light"] {
+      background-color: var(--bg-light);
+      color: var(--text-light);
+    }
+    [data-theme="dark"] {
+      background-color: var(--bg-dark);
+      color: var(--text-dark);
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    header {
+      background: var(--primary);
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.5rem;
+      position: relative;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: var(--card-bg-light);
+      border-radius: 8px;
+      transition: background-color 0.3s;
+    }
+    [data-theme="dark"] .container {
+      background: var(--card-bg-dark);
+    }
+    .toggle-theme {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #444;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .odd-widget {
+      margin-top: 2rem;
+    }
+    .odds-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    .odds-table th, .odds-table td {
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      text-align: center;
+    }
+    .odds-table th {
+      background-color: #e0f2f1;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    Dashboard de Arbitragem com Odds ao Vivo
+    <div class="toggle-theme" onclick="alternarTema()">🌓 Alternar Tema</div>
+  </header>
+  <div class="container">
+    <h3>⚽ Widget Oddspedia (caso domínio esteja autorizado)</h3>
+    <div class="oddspedia-widget"
+         data-sport="soccer"
+         data-league="Brazil"
+         data-oddstype="1x2"
+         data-theme="light"
+         data-show-logos="true"
+         data-show-filter="true"
+         style="width: 100%; height: 600px;"></div>
+
+    <h3>📊 Tabela com Odds da API (The Odds API)</h3>
+    <table class="odds-table" id="odds-table">
+      <thead>
+        <tr>
+          <th>Jogo</th>
+          <th>Time 1</th>
+          <th>Empate</th>
+          <th>Time 2</th>
+          <th>Casa de Aposta</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    function alternarTema() {
+      const html = document.documentElement;
+      const temaAtual = html.getAttribute('data-theme');
+      html.setAttribute('data-theme', temaAtual === 'dark' ? 'light' : 'dark');
+    }
+
+    async function carregarOddsAPI() {
+      const url = 'https://api.the-odds-api.com/v4/sports/soccer_brazil_campeonato/odds/?regions=br&markets=h2h&apiKey=44b0d17f3ef90dc8c28d0a881763e420';
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const tbody = document.querySelector('#odds-table tbody');
+        tbody.innerHTML = '';
+
+        data.slice(0, 5).forEach(jogo => {
+          const time1 = jogo.bookmakers[0].markets[0].outcomes[0];
+          const empate = jogo.bookmakers[0].markets[0].outcomes[1];
+          const time2 = jogo.bookmakers[0].markets[0].outcomes[2];
+          const casa = jogo.bookmakers[0].title;
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${jogo.home_team} x ${jogo.away_team}</td>
+            <td>${time1.price}</td>
+            <td>${empate.price}</td>
+            <td>${time2.price}</td>
+            <td>${casa}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (error) {
+        console.error('Erro ao carregar odds da API:', error);
+      }
+    }
+
+    carregarOddsAPI();
+  </script>
+</body>
+</html>
