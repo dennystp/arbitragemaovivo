@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard de Arbitragem</title>
+  <style>
+    :root {
+      --bg-light: #f9f9f9;
+      --bg-dark: #1c1c1c;
+      --text-light: #333;
+      --text-dark: #f0f0f0;
+      --primary: #0b6e4f;
+      --card-bg-light: white;
+      --card-bg-dark: #2a2a2a;
+    }
+    [data-theme="light"] {
+      background-color: var(--bg-light);
+      color: var(--text-light);
+    }
+    [data-theme="dark"] {
+      background-color: var(--bg-dark);
+      color: var(--text-dark);
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    header {
+      background: var(--primary);
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.5rem;
+      position: relative;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: var(--card-bg-light);
+      border-radius: 8px;
+      transition: background-color 0.3s;
+    }
+    [data-theme="dark"] .container {
+      background: var(--card-bg-dark);
+    }
+    .toggle-theme {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #444;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    iframe {
+      width: 100%;
+      height: 800px;
+      border: none;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    Dashboard de Arbitragem com Odds Online
+    <div class="toggle-theme" onclick="alternarTema()">🌓 Alternar Tema</div>
+  </header>
+  <div class="container">
+    <h3>📊 Odds ao Vivo de Casas Populares</h3>
+    <iframe src="https://widget.odds.online/widgets/brazilian-serie-a?lang=pt"></iframe>
+  </div>
+
+  <script>
+    function alternarTema() {
+      const html = document.documentElement;
+      const temaAtual = html.getAttribute('data-theme');
+      html.setAttribute('data-theme', temaAtual === 'dark' ? 'light' : 'dark');
+    }
+  </script>
+</body>
+</html>
